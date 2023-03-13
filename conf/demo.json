@@ -1,0 +1,7 @@
+{
+    "camera_0": {
+        "type": "camera",
+        "in_topic": "/test0",
+        "out_topic": "/image/raw0"
+    }
+}
