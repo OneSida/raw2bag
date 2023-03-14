@@ -5,7 +5,7 @@
 #include <ros/console.h>
 
 
-int Config::init(const std::string &config_file) {
+int32_t Config::init(const std::string &config_file) {
     std::ifstream fin(config_file);
     if (!fin.good()) {
         ROS_ERROR("Failed to open config file");

@@ -18,7 +18,7 @@ struct SensorInfo {
 
 class Config {
 public:
-    int init(const std::string &config_file);
+    int32_t init(const std::string &config_file);
     void get_topic_map_by_sensor_type(const SensorType sensor_type,
         std::unordered_map<std::string, std::string> &topic_map) const;
 

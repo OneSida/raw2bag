@@ -5,28 +5,23 @@
 #include <ros/console.h>
 
 
-int main(int argc, char **argv) {
+int32_t main(int32_t argc, char **argv) {
     ROS_INFO("Start!");
     ros::Time::init();
     auto start_time = std::chrono::steady_clock::now();
 
     std::string root_path = "/root/ros_workspace/raw2bag_workspace/src/raw2bag";
-    std::string config_name = "demo";
-
-    std::string config_file = root_path + "/conf/" + config_name + ".json";
+    std::string config_file = root_path + "/conf/demo.json";
     Config config;
-    int ret = config.init(config_file);
+    int32_t ret = config.init(config_file);
     if (0 != ret) {
         return -1;
     }
 
-    std::string in_file = root_path + "/data/" + config_name + ".bin";
-    std::string out_file = root_path + "/data/" + config_name + ".bag";
+    std::string in_file = root_path + "/data/test_camera_1678758732000000030";
+    std::string out_file = root_path + "/data/demo.bag";
     Handler handler;
-    handler.work(config, in_file, out_file);
-    if (0 != ret) {
-        return -1;
-    }
+    handler.dump(config, in_file, out_file);
 
     auto finish_time = std::chrono::steady_clock::now();
     ROS_INFO("time elapsed: %.2lf sec", std::chrono::duration_cast<

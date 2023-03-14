@@ -1,7 +1,42 @@
 {
     "camera_0": {
         "type": "camera",
-        "in_topic": "/test0",
+        "in_topic": "/dev/video0",
         "out_topic": "/image/raw0"
+    },
+    "camera_1": {
+        "type": "camera",
+        "in_topic": "/dev/video1",
+        "out_topic": "/image/raw1"
+    },
+    "camera_2": {
+        "type": "camera",
+        "in_topic": "/dev/video2",
+        "out_topic": "/image/raw2"
+    },
+    "camera_3": {
+        "type": "camera",
+        "in_topic": "/dev/video3",
+        "out_topic": "/image/raw3"
+    },
+    "camera_4": {
+        "type": "camera",
+        "in_topic": "/dev/video4",
+        "out_topic": "/image/raw4"
+    },
+    "camera_5": {
+        "type": "camera",
+        "in_topic": "/dev/video5",
+        "out_topic": "/image/raw5"
+    },
+    "camera_6": {
+        "type": "camera",
+        "in_topic": "/dev/video6",
+        "out_topic": "/image/raw6"
+    },
+    "camera_7": {
+        "type": "camera",
+        "in_topic": "/dev/video7",
+        "out_topic": "/image/raw7"
     }
 }
