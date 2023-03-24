@@ -30,6 +30,8 @@ int32_t Config::init(const std::string &config_file) {
         }
         if ("camera" == sensor_config["type"]) {
             sensor_info.type = CAMERA;
+        } else if ("lidar" == sensor_config["type"]) {
+            sensor_info.type = LIDAR;
         } else {
             return -1;
         }

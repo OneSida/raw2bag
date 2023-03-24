@@ -38,5 +38,10 @@
         "type": "camera",
         "in_topic": "/dev/video7",
         "out_topic": "/image/raw7"
+    },
+    "lidar_0": {
+        "type": "lidar",
+        "in_topic": "rslidar",
+        "out_topic": "/pointcloud"
     }
 }

@@ -18,7 +18,7 @@ int32_t main(int32_t argc, char **argv) {
         return -1;
     }
 
-    std::string in_file = root_path + "/data/test_camera_1678758732000000030";
+    std::string in_file = root_path + "/data/test_1677898155";
     std::string out_file = root_path + "/data/demo.bag";
     Handler handler;
     handler.dump(config, in_file, out_file);

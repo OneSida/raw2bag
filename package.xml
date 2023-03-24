@@ -2,7 +2,7 @@
   <name>raw2bag</name>
   <version>1.0.0</version>
   <description>raw2bag tool</description>
-  <maintainer email="ma.yihui@byd.com">Yihui Ma</maintainer>
+  <maintainer email="mayihui12@foxmail.com">Yihui Ma</maintainer>
   <license>BSD</license>
 
   <buildtool_depend>catkin</buildtool_depend>
@@ -10,8 +10,10 @@
   <build_depend>sensor_msgs</build_depend>
   <build_depend>rosbag</build_depend>
   <build_depend>cv_bridge</build_depend>
+  <build_depend>pcl_ros</build_depend>
   <run_depend>roscpp</run_depend> 
   <run_depend>sensor_msgs</run_depend> 
   <run_depend>rosbag</run_depend>
   <run_depend>cv_bridge</run_depend>
+  <run_depend>pcl_ros</run_depend>
 </package>
