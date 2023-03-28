@@ -1,0 +1,7 @@
+{
+    "camera_6": {
+        "type": "camera",
+        "in_topic": "/dev/video6",
+        "out_topic": "/image/raw6"
+    }
+}

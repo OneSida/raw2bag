@@ -13,8 +13,8 @@
 #include <pcl_ros/point_cloud.h>
 
 
-void Handler::dump(const Config &config, const std::string &in_file, const std::string &out_file) {
-    ROS_INFO("in file: %s", in_file.c_str());
+void Handler::dump(const Config &config, const std::vector<std::string> &in_files,
+        const std::string &out_file) {
     ROS_INFO("out file: %s", out_file.c_str());
 
     std::unordered_map<std::string, std::string> camera_topic_map;
@@ -25,32 +25,35 @@ void Handler::dump(const Config &config, const std::string &in_file, const std::
     config.get_topic_map_by_sensor_type(LIDAR, lidar_topic_map);
     ROS_INFO("lidar topic number: %lu", lidar_topic_map.size());
 
-    std::fstream fin(in_file, std::ios::in | std::ios::binary);
-    common::Chunk chunk;
-    chunk.ParseFromIstream(&fin);
-    fin.close();
-
     rosbag::Bag out_bag;
     out_bag.open(out_file, rosbag::bagmode::Write);
     drivers::CompressedImage comp_img;
     drivers::PointCloud pcd;
 
-    for (int32_t i = 0; i < chunk.messages_size(); ++i) {
-        const auto &msg = chunk.messages(i);
-        ROS_INFO("msg_id=%d sensor_name=%s", i, msg.sensor_name().c_str());
-        if ("camera" == msg.sensor_name()) {
-            comp_img.ParseFromString(msg.content());
-            ROS_INFO("frame_id=%s", comp_img.frame_id().c_str());
-            auto it = camera_topic_map.find(comp_img.frame_id());
-            if (it != camera_topic_map.end() && "jpeg" == comp_img.format()) {
-                handleCameraData(comp_img, it->second, out_bag);
-            }
-        } else if ("lidar" == msg.sensor_name()) {
-            pcd.ParseFromString(msg.content());
-            ROS_INFO("frame_id=%s", pcd.frame_id().c_str());
-            auto it = lidar_topic_map.find(pcd.frame_id());
-            if (it != lidar_topic_map.end() && pcd.has_measurement_time()) {
-                handleLidarData(pcd, it->second, out_bag);
+    for (const auto &in_file : in_files) {
+        std::fstream fin(in_file, std::ios::in | std::ios::binary);
+        common::Chunk chunk;
+        chunk.ParseFromIstream(&fin);
+        fin.close();
+        for (int32_t i = 0; i < chunk.messages_size(); ++i) {
+            const auto &msg = chunk.messages(i);
+            // ROS_INFO("msg_id=%d sensor_name=%s", i, msg.sensor_name().c_str());
+            if ("camera" == msg.sensor_name()) {
+                comp_img.ParseFromString(msg.content());
+                ROS_INFO("frame_id=%s", comp_img.frame_id().c_str());
+                auto it = camera_topic_map.find(comp_img.frame_id());
+                if (it != camera_topic_map.end() && "jpeg" == comp_img.format()) {
+                    ROS_INFO("msg_id=%d sensor_name=%s", i, msg.sensor_name().c_str());
+                    handleCameraData(comp_img, it->second, out_bag);
+                }
+            } else if ("lidar" == msg.sensor_name()) {
+                pcd.ParseFromString(msg.content());
+                ROS_INFO("frame_id=%s", pcd.frame_id().c_str());
+                auto it = lidar_topic_map.find(pcd.frame_id());
+                if (it != lidar_topic_map.end() && pcd.has_measurement_time()) {
+                    ROS_INFO("msg_id=%d sensor_name=%s", i, msg.sensor_name().c_str());
+                    handleLidarData(pcd, it->second, out_bag);
+                }
             }
         }
     }

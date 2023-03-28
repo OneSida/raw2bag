@@ -1,0 +1,12 @@
+{
+    "camera_6": {
+        "type": "camera",
+        "in_topic": "/dev/video6",
+        "out_topic": "/image/raw6"
+    },
+    "lidar_0": {
+        "type": "lidar",
+        "in_topic": "rslidar",
+        "out_topic": "/pointcloud"
+    }
+}

@@ -33,7 +33,7 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(
 
 class Handler {
 public:
-    void dump(const Config &config, const std::string &in_file,
+    void dump(const Config &config, const std::vector<std::string> &in_files,
         const std::string &out_file);
     void handleCameraData(const drivers::CompressedImage &comp_img,
         const std::string &out_topic, rosbag::Bag &out_bag);
