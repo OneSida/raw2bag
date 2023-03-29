@@ -10,6 +10,7 @@
 #include <opencv2/core/hal/interface.h>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/opencv.hpp>
+#include <opencv2/imgproc.hpp>
 #include <pcl_ros/point_cloud.h>
 
 
@@ -40,18 +41,18 @@ void Handler::dump(const Config &config, const std::vector<std::string> &in_file
             // ROS_INFO("msg_id=%d sensor_name=%s", i, msg.sensor_name().c_str());
             if ("camera" == msg.sensor_name()) {
                 comp_img.ParseFromString(msg.content());
-                ROS_INFO("frame_id=%s", comp_img.frame_id().c_str());
                 auto it = camera_topic_map.find(comp_img.frame_id());
                 if (it != camera_topic_map.end() && "jpeg" == comp_img.format()) {
-                    ROS_INFO("msg_id=%d sensor_name=%s", i, msg.sensor_name().c_str());
+                    ROS_INFO("msg_id=%d sensor_name=%s frame_id=%s",
+                        i, msg.sensor_name().c_str(), comp_img.frame_id().c_str());
                     handleCameraData(comp_img, it->second, out_bag);
                 }
             } else if ("lidar" == msg.sensor_name()) {
                 pcd.ParseFromString(msg.content());
-                ROS_INFO("frame_id=%s", pcd.frame_id().c_str());
                 auto it = lidar_topic_map.find(pcd.frame_id());
                 if (it != lidar_topic_map.end() && pcd.has_measurement_time()) {
-                    ROS_INFO("msg_id=%d sensor_name=%s", i, msg.sensor_name().c_str());
+                    ROS_INFO("msg_id=%d sensor_name=%s frame_id=%s",
+                        i, msg.sensor_name().c_str(), pcd.frame_id().c_str());
                     handleLidarData(pcd, it->second, out_bag);
                 }
             }
@@ -65,7 +66,8 @@ void Handler::handleCameraData(const drivers::CompressedImage &comp_img,
     sensor_msgs::Image image_msg;
     std_msgs::Header header;
     header.seq = comp_img.header().sequence_num();
-    header.stamp = ros::Time(static_cast<double>(comp_img.header().camera_timestamp()) * 1e-9);
+    // header.stamp = ros::Time(static_cast<double>(comp_img.header().camera_timestamp()) * 1e-9);
+    header.stamp = ros::Time::now();
     header.frame_id = comp_img.frame_id();
     ROS_INFO("seq=%u", header.seq);
 
@@ -73,9 +75,9 @@ void Handler::handleCameraData(const drivers::CompressedImage &comp_img,
     jpeg_data.data = reinterpret_cast<uchar*>(const_cast<char*>(comp_img.data().c_str()));
     cv::InputArray cv_jpeg_data(jpeg_data);
     cv::Mat decoded_image = cv::imdecode(cv_jpeg_data, cv::IMREAD_COLOR);
-    // cv::imshow("debug", decoded_image);
-    // cv::waitKey(0);
-    auto image_bridge = cv_bridge::CvImage(header, sensor_msgs::image_encodings::RGB8, decoded_image);
+    cv::Mat resized_image;
+    cv::resize(decoded_image, resized_image, cv::Size(960, 540));
+    auto image_bridge = cv_bridge::CvImage(header, sensor_msgs::image_encodings::RGB8, resized_image);
     image_bridge.toImageMsg(image_msg);
 
     // out_bag.write(out_topic, ros::Time(comp_img.header().timestamp_sec() * 1e-3), image_msg);
@@ -87,7 +89,8 @@ void Handler::handleLidarData(const drivers::PointCloud &pcd,
     sensor_msgs::PointCloud2 lidar_msg;
     std_msgs::Header header;
     header.seq = pcd.header().sequence_num();
-    header.stamp = ros::Time(pcd.measurement_time());
+    // header.stamp = ros::Time(pcd.measurement_time());
+    header.stamp = ros::Time::now();
     header.frame_id = pcd.frame_id();
     ROS_INFO("seq=%u", header.seq);
 
